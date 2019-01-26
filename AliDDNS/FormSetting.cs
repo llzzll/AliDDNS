@@ -33,33 +33,12 @@ namespace AliDDNS
                 {"DomainName", this.textDomain.Text},
                 {"RRKeyWord", this.textPrefix.Text},
             };
-            string domain = "alidns.aliyuncs.com";
-            DomainRequestHelper requestHelper = new DomainRequestHelper(parameters);
-            requestHelper.AccessKeyId = this.textAccID.Text;
-            requestHelper.AccessKeySecret = this.textAccSecret.Text;
-            string url = requestHelper.GetUrl(domain);
-            WebRequest request = request = HttpWebRequest.Create(url);
-            request.Timeout = 10 * 1000;
-            Stream responseStream = null;
-            try
-            {
-                responseStream = request.GetResponse().GetResponseStream();
-            }
-            catch
-            {
-                MessageBox.Show("验证失败");
-                return;
-            }
-            StreamReader reader = new StreamReader(responseStream, Encoding.UTF8);
-            string recordsXML = reader.ReadToEnd();
-            XmlDocument xml = new XmlDocument();
-            xml.LoadXml(recordsXML);
-            if (xml.SelectNodes("//Error").Count > 0)
-            {
-                MessageBox.Show("验证失败");
-                return;
-            }
 
+            if (!BLL.CheckConfig(parameters, this.textAccID.Text, this.textAccSecret.Text))
+            {
+                MessageBox.Show("验证失败");
+                return;
+            }
             SystemConfig.Domain = this.textDomain.Text;
             SystemConfig.AccessKeyId = this.textAccID.Text;
             SystemConfig.AccessKeySecret = this.textAccSecret.Text;
@@ -76,7 +55,7 @@ namespace AliDDNS
                 SystemConfig.ThreadTimer.Change(-1, 0);
             }
 
-           SystemConfig.StartOnBoot = this.checkStartOnBoot.Checked;
+            SystemConfig.StartOnBoot = this.checkStartOnBoot.Checked;
 
             SystemConfig.saveConfig();
             this.DialogResult = System.Windows.Forms.DialogResult.OK;

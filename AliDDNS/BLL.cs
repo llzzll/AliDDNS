@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Net;
 using System.Xml;
 
@@ -17,7 +18,6 @@ namespace AliDDNS
             }
             catch (Exception)
             {
-
                 return "获取失败，请检查网络";
             }
         }
@@ -105,25 +105,69 @@ namespace AliDDNS
 
         public static string getDDNSIP()
         {
-            if (string.IsNullOrEmpty(SystemConfig.AccessKeyId) || string.IsNullOrEmpty(SystemConfig.AccessKeySecret) || string.IsNullOrEmpty(SystemConfig.Domain))
+            try
             {
-                return "无可用配置";
+                if (string.IsNullOrEmpty(SystemConfig.AccessKeyId) || string.IsNullOrEmpty(SystemConfig.AccessKeySecret) || string.IsNullOrEmpty(SystemConfig.Domain))
+                {
+                    return "无可用配置";
+                }
+                List<string> typeARecordId = new List<string>();
+                List<XmlNode> typeANodeList = DomainRequestHelper.getTypeAList(ref typeARecordId);
+                if (typeANodeList.Count > 0)
+                {
+                    XmlNode node = typeANodeList[0];
+                    XmlNode valueNode = node.SelectSingleNode("Value");
+                    return valueNode.InnerText;
+                }
             }
-            List<string> typeARecordId = new List<string>();
-            List<XmlNode> typeANodeList = DomainRequestHelper.getTypeAList(ref typeARecordId);
-            if (typeANodeList.Count > 0)
+            catch (Exception)
             {
-                XmlNode node = typeANodeList[0];
-                XmlNode valueNode = node.SelectSingleNode("Value");
-                return valueNode.InnerText;
+
+                return "连接失败";
             }
             return "";
         }
 
+        public static bool CheckConfig(Dictionary<string, string> parameters, string accessKeyId, string accessKeySecret)
+        {
+            try
+            {
+                string domain = "alidns.aliyuncs.com";
+                DomainRequestHelper requestHelper = new DomainRequestHelper(parameters);
+                requestHelper.AccessKeyId = accessKeyId;
+                requestHelper.AccessKeySecret = accessKeySecret;
+                string url = requestHelper.GetUrl(domain);
+                WebRequest request = request = HttpWebRequest.Create(url);
+                request.Timeout = 10 * 1000;
+                Stream responseStream = request.GetResponse().GetResponseStream();
+                StreamReader reader = new StreamReader(responseStream, System.Text.Encoding.UTF8);
+                string recordsXML = reader.ReadToEnd();
+                XmlDocument xml = new XmlDocument();
+                xml.LoadXml(recordsXML);
+                if (xml.SelectNodes("//Error").Count > 0)
+                {
+                    return false;
+                }
+            }
+            catch
+            {
+                return false;
+            }
+            return true;
+        }
+
         private static void sendMsgToServerChan(string data)
         {
-            WebRequest request = request = HttpWebRequest.Create("https://sc.ftqq.com/" + SystemConfig.ServerChanKey + ".send?text=" + data);
-            request.GetResponse();
+            try
+            {
+                WebRequest request = request = HttpWebRequest.Create("https://sc.ftqq.com/" + SystemConfig.ServerChanKey + ".send?text=" + data);
+                request.GetResponse();
+            }
+            catch (Exception)
+            {
+
+                return;
+            }
         }
 
 

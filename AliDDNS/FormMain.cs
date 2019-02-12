@@ -29,12 +29,25 @@ namespace AliDDNS
         private void updateDDNSCycle(object data)
         {
             string curIp = BLL.getCurIP();
-            string updateResult = BLL.updateDDNS();
+            string updateIP = BLL.updateDDNS();
             string ddnsIp = BLL.getDDNSIP();
+            string nowTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
             CallBackHandle1 c = () =>
             {
                 this.labelCurIP.Text = curIp;
-                this.labelLog.Text = updateResult;
+                if (string.IsNullOrEmpty(updateIP))
+                {
+                    this.labelLog.Text = "【" + nowTime + "】：keep";
+                }
+                else if ("error".Equals(updateIP))
+                {
+                    this.labelLog.Text = "【" + nowTime + "】：error";
+                }
+                else
+                {
+                    this.labelLog.Text = "【" + nowTime + "】：success（" + updateIP + "）";
+                    this.labelLastUpdate.Text = "【" + nowTime + "】：lastUpdate  \"" + updateIP + "\"";
+                }
                 this.labelDDNSIP.Text = ddnsIp;
             };
             Invoke(c, new object[] { });
@@ -116,11 +129,29 @@ namespace AliDDNS
         private void btnUpdate_Click(object sender, EventArgs e)
         {
             this.labelCurIP.Text = "正在获取...";
-            this.labelLog.Text= "正在获取...";
-            this.labelDDNSIP.Text= "正在获取...";
+            this.labelLog.Text = "正在获取...";
+            this.labelDDNSIP.Text = "正在获取...";
             Application.DoEvents();
             this.labelCurIP.Text = BLL.getCurIP();
-            this.labelLog.Text = BLL.updateDDNS();
+            Application.DoEvents();
+            this.Refresh();
+            string updateIP = BLL.updateDDNS();
+            string nowTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+            if (string.IsNullOrEmpty(updateIP))
+            {
+                this.labelLog.Text = "【" + nowTime + "】：keep";
+            }
+            else if ("error".Equals(updateIP))
+            {
+                this.labelLog.Text = "【" + nowTime + "】：error";
+            }
+            else
+            {
+                this.labelLog.Text = "【" + nowTime + "】：success（" + updateIP + "）";
+                this.labelLastUpdate.Text = "【" + nowTime + "】：lastUpdate  \"" + updateIP + "\"";
+            }
+            Application.DoEvents();
+            this.Refresh();
             this.labelDDNSIP.Text = BLL.getDDNSIP();
         }
 

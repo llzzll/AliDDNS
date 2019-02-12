@@ -48,7 +48,7 @@ namespace AliDDNS
                         XmlNode valueNode = node.SelectSingleNode("Value");
                         if (valueNode.InnerText.Equals(updateIP))
                         {
-                            return "【" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + "】：keep";
+                            return "";
                         }
                     }
                     else if (typeARecordIdList.Count > 0)
@@ -94,11 +94,11 @@ namespace AliDDNS
                 {
                     sendMsgToServerChan("DDNS已更新（" + updateIP + "）");
                 }
-                return "【" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + "】：success（" + updateIP + "）";
+                return updateIP;
             }
             catch
             {
-                return "【" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + "】：error";
+                return "error";
             }
 
         }

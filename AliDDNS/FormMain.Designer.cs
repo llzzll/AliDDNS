@@ -44,6 +44,7 @@
             this.label3 = new System.Windows.Forms.Label();
             this.btnGetDDNSIP = new System.Windows.Forms.Button();
             this.labelLog = new System.Windows.Forms.Label();
+            this.labelLastUpdate = new System.Windows.Forms.Label();
             this.NotifyMenu.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -171,11 +172,21 @@
             this.labelLog.TabIndex = 11;
             this.labelLog.Text = "【软件启动】";
             // 
+            // labelLastUpdate
+            // 
+            this.labelLastUpdate.AutoSize = true;
+            this.labelLastUpdate.Location = new System.Drawing.Point(12, 98);
+            this.labelLastUpdate.Name = "labelLastUpdate";
+            this.labelLastUpdate.Size = new System.Drawing.Size(77, 12);
+            this.labelLastUpdate.TabIndex = 12;
+            this.labelLastUpdate.Text = "【软件启动】";
+            // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(428, 99);
+            this.ClientSize = new System.Drawing.Size(428, 119);
+            this.Controls.Add(this.labelLastUpdate);
             this.Controls.Add(this.labelLog);
             this.Controls.Add(this.btnGetDDNSIP);
             this.Controls.Add(this.label1);
@@ -188,7 +199,7 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
-            this.MaximumSize = new System.Drawing.Size(547, 138);
+            this.MaximumSize = new System.Drawing.Size(547, 158);
             this.Name = "FormMain";
             this.ShowInTaskbar = false;
             this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
@@ -218,6 +229,7 @@
         private System.Windows.Forms.Button btnGetDDNSIP;
         private System.Windows.Forms.Label labelLog;
         private System.Windows.Forms.ToolStripMenuItem 开机启动ToolStripMenuItem;
+        private System.Windows.Forms.Label labelLastUpdate;
     }
 }
 

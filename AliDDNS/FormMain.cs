@@ -46,7 +46,7 @@ namespace AliDDNS
                 else
                 {
                     this.labelLog.Text = "【" + nowTime + "】：success（" + updateIP + "）";
-                    this.labelLastUpdate.Text = "【" + nowTime + "】：lastUpdate  \"" + updateIP + "\"";
+                    this.labelLastUpdate.Text = "【" + nowTime + "】：lastUpdate（" + updateIP + "）";
                 }
                 this.labelDDNSIP.Text = ddnsIp;
             };
@@ -148,7 +148,7 @@ namespace AliDDNS
             else
             {
                 this.labelLog.Text = "【" + nowTime + "】：success（" + updateIP + "）";
-                this.labelLastUpdate.Text = "【" + nowTime + "】：lastUpdate  \"" + updateIP + "\"";
+                this.labelLastUpdate.Text = "【" + nowTime + "】：lastUpdate（" + updateIP + "）";
             }
             Application.DoEvents();
             this.Refresh();

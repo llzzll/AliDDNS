@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
+using System.Web.Script.Serialization;
 using System.Xml;
+
 
 namespace AliDDNS
 {
@@ -13,12 +15,15 @@ namespace AliDDNS
             try
             {
                 WebClient client = new WebClient();
-                string response = client.DownloadString("http://whatismyip.akamai.com/");
-                return response;
+                string response = client.DownloadString("http://pv.sohu.com/cityjson?ie=utf-8");
+                JavaScriptSerializer serializer = new JavaScriptSerializer();
+                Dictionary<String, String> dic = serializer.Deserialize<Dictionary<String, String>>(response.Replace(";", "").Split('=')[1]);
+                return dic["cip"];
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return "获取失败，请检查网络";
+                Console.Write(ex.StackTrace);
+                return "获取失败，请检查网络：" + ex.Message;
             }
         }
 

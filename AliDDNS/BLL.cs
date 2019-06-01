@@ -15,7 +15,7 @@ namespace AliDDNS
             try
             {
                 WebClient client = new WebClient();
-                string response = client.DownloadString("http://pv.sohu.com/cityjson?ie=utf-8");
+                string response = System.Text.Encoding.UTF8.GetString(client.DownloadData("http://pv.sohu.com/cityjson?ie=utf-8"));
                 JavaScriptSerializer serializer = new JavaScriptSerializer();
                 Dictionary<String, String> dic = serializer.Deserialize<Dictionary<String, String>>(response.Replace(";", "").Split('=')[1]);
                 return dic["cip"];

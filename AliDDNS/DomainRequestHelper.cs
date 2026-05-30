@@ -133,7 +133,7 @@ namespace AliDDNS
                 {"TypeKeyWord", "A"},
                 {"RRKeyWord", SystemConfig.Prefix},
             };
-            string recordsXML = requestAli(parameters);
+            string recordsXML = requestAliyun(parameters);
             XmlDocument xml = new XmlDocument();
             xml.LoadXml(recordsXML);
             XmlNodeList nodelist = xml.SelectNodes("//Record");
@@ -148,7 +148,7 @@ namespace AliDDNS
             return typeANodeList;
         }
 
-        public static string requestAli(Dictionary<string, string> parameters)
+        public static string requestAliyun(Dictionary<string, string> parameters)
         {
             Thread.Sleep(1000);
             string domain = "alidns.aliyuncs.com";

@@ -15,10 +15,10 @@ namespace AliDDNS
             try
             {
                 WebClient client = new WebClient();
-                string response = System.Text.Encoding.UTF8.GetString(client.DownloadData("http://pv.sohu.com/cityjson?ie=utf-8"));
+                string response = client.DownloadString("https://ipv4.jsonip.com/");
                 JavaScriptSerializer serializer = new JavaScriptSerializer();
-                Dictionary<String, String> dic = serializer.Deserialize<Dictionary<String, String>>(response.Replace(";", "").Split('=')[1]);
-                return dic["cip"];
+                Dictionary<String, String> dic = serializer.Deserialize<Dictionary<String, String>>(response);
+                return dic["ip"];
             }
             catch (Exception ex)
             {
@@ -27,6 +27,17 @@ namespace AliDDNS
             }
         }
 
+
+        public static AlibabaCloud.SDK.Alidns20150109.Client CreateClient()
+        {
+            Aliyun.Credentials.Client credential = new Aliyun.Credentials.Client();
+            AlibabaCloud.OpenApiClient.Models.Config config = new AlibabaCloud.OpenApiClient.Models.Config
+            {
+                Credential = credential,
+            };
+            config.Endpoint = "alidns.aliyuncs.com";
+            return new AlibabaCloud.SDK.Alidns20150109.Client(config);
+        }
 
 
         public static string updateDDNS()
@@ -55,29 +66,44 @@ namespace AliDDNS
                         {
                             return "";
                         }
+                        else
+                        {
+                            parameters = new Dictionary<string, string>()
+                            {
+                                {"Action", "UpdateDomainRecord"},
+                                {"RecordId", typeARecordIdList[0]},
+                                {"RR", "www"},
+                                {"Type", "A"},
+                                {"Value", updateIP},
+                            };
+                            DomainRequestHelper.requestAliyun(parameters);
+                        }
                     }
                     else if (typeARecordIdList.Count > 0)
                     {
                         foreach (string recordId in typeARecordIdList)
                         {
                             parameters = new Dictionary<string, string>()
-                        {
-                            {"Action", "DeleteDomainRecord"},
-                            {"RecordId", recordId},
-                        };
-                            DomainRequestHelper.requestAli(parameters);
+                            {
+                                {"Action", "DeleteDomainRecord"},
+                                {"RecordId", recordId},
+                            };
+                            DomainRequestHelper.requestAliyun(parameters);
                         }
                     }
+                }
+                else
+                {
                     // 添加记录
                     parameters = new Dictionary<string, string>()
-                {
-                    {"Action", "AddDomainRecord"},
-                    {"DomainName", SystemConfig.Domain},
-                    {"RR", SystemConfig.Prefix},
-                    {"Type", "A"},
-                    {"Value", updateIP},
-                };
-                    DomainRequestHelper.requestAli(parameters);
+                    {
+                        {"Action", "AddDomainRecord"},
+                        {"DomainName", SystemConfig.Domain},
+                        {"RR", SystemConfig.Prefix},
+                        {"Type", "A"},
+                        {"Value", updateIP},
+                    };
+                    DomainRequestHelper.requestAliyun(parameters);
                 }
 
                 // 验证
@@ -101,9 +127,10 @@ namespace AliDDNS
                 }
                 return updateIP;
             }
-            catch
+            catch(Exception ex)
             {
-                return "error";
+                Console.Write(ex.StackTrace);
+                return "error:" + ex.Message;
             }
 
         }
